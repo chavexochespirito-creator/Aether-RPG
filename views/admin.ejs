@@ -1,35 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Painel ADM - SAMP</title>
+    <meta charset="UTF-8"><title>Gestão - SAMP</title>
     <style>
-        body { background: #0f0f0f; color: white; font-family: sans-serif; text-align: center; }
-        table { width: 80%; margin: 50px auto; border-collapse: collapse; background: #1a1a1a; }
-        th, td { border: 1px solid #f1c40f; padding: 15px; text-align: center; }
+        body { background: #0f0f0f; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; }
+        .sidebar { width: 250px; background: #1a1a1a; height: 100vh; padding: 20px; border-right: 2px solid #f1c40f; position: fixed; }
+        .main { margin-left: 290px; padding: 40px; width: 100%; }
+        .stat-card { background: #1a1a1a; padding: 20px; border-radius: 15px; border-left: 5px solid #f1c40f; display: inline-block; margin-right: 20px; min-width: 200px; }
+        table { width: 100%; border-collapse: collapse; background: #1a1a1a; margin-top: 20px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #333; }
         th { background: #f1c40f; color: black; }
-        button { background: #2ecc71; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 5px; }
+        .btn-approve { background: #2ecc71; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; }
+        .search-box { margin-bottom: 20px; display: flex; gap: 10px; }
+        .search-box input { padding: 10px; border-radius: 5px; border: none; width: 300px; }
+        .search-box button { padding: 10px 20px; background: #f1c40f; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>Pedidos de Cash Pendentes</h1>
-    <table>
-        <tr>
-            <th>Usuário</th>
-            <th>Quantidade de Cash</th>
-            <th>Ação</th>
-        </tr>
-        <% orders.forEach(order => { %>
-        <tr>
-            <td><%= order.username %></td>
-            <td><%= order.amount %></td>
-            <td>
-                <form action="/approve" method="POST">
-                    <input type="hidden" name="id" value="<%= order._id %>">
-                    <button type="submit">Aprovar e Dar Cash</button>
-                </form>
-            </td>
-        </tr>
-        <% }) %>
-    </table>
+    <div class="sidebar"><h2>SAMP ADMIN</h2><p>Gestão Total</p></div>
+    <div class="main">
+        <h1>Dashboard</h1>
+        <div class="stat-card"><h4>Faturamento Total</h4><p>$<%= totalRevenue %></p></div>
+        <div class="stat-card"><h4>Usuários</h4><p><%= users.length %></p></div>
+
+        <h2>Pedidos de Cash</h2>
+        <table>
+            <tr><th>Usuário</th><th>Quantidade</th><th>Ação</th></tr>
+            <% orders.forEach(order => { %>
+            <tr><td><%= order.username %></td><td>$<%= order.amount %></td>
+                <td><form action="/approve" method="POST"><input type="hidden" name="id" value="<%= order._id %>"><button class="btn-approve">Aprovar</button></form></td>
+            </tr>
+            <% }) %>
+        </table>
+
+        <h2>Recuperações de Conta</h2>
+        <table>
+            <tr><th>Usuário</th><th>E-mail</th><th>Ação</th></tr>
+            <% recoveries.forEach(rec => { %>
+            <tr><td><%= rec.username %></td><td><%= rec.email %></td>
+                <td><form action="/admin/reset-pass" method="POST" style="display:flex; gap:5px;"><input type="hidden" name="requestId" value="<%= rec._id %>"><input name="newPassword" placeholder="Nova Senha" required><button class="btn-approve" style="background:#3498db">Resetar</button></form></td>
+            </tr>
+            <% }) %>
+        </table>
+
+        <h2 style="margin-top: 50px;">Pesquisar Usuário</h2>
+        <form class="search-box" action="/admin" method="GET">
+            <input name="search" placeholder="Nome do jogador..." value="<%= query %>">
+            <button type="submit">Buscar</button>
+        </form>
+        <table>
+            <tr><th>Usuário</th><th>E-mail</th><th>Saldo</th></tr>
+            <% users.forEach(user => { %>
+            <tr><td><%= user.username %></td><td><%= user.email %></td><td>$<%= user.cash %></td></tr>
+            <% }) %>
+        </table>
+    </div>
 </body>
 </html>
