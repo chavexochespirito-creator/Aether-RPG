@@ -1,6 +1,6 @@
 {
   "name": "samp-ultra-premium",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "main": "server.js",
   "dependencies": {
     "express": "^4.18.2",
@@ -10,8 +10,7 @@
     "connect-mongo": "^4.1.1",
     "ejs": "^3.1.9",
     "helmet": "^7.0.0",
-    "express-rate-limit": "^6.7.0",
-    "axios": "^1.4.0"
+    "express-rate-limit": "^6.7.0"
   },
   "scripts": {
     "start": "node server.js"
