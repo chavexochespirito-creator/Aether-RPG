@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const app = express();
 
-const mongoURI = 'mongodb+srv://admin_samp:samp123@cluster0.abcde.mongodb.net/?retryWrites=true&w=majority';
+const mongoURI = 'mongodb+srv://admin_samp:samp123@cluster0.2wi9tep.mongodb.net/';
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => console.log("Banco de Dados Conectado!"))
