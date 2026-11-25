@@ -1,29 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>SAMP Server - Login</title>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAMP Server - Portal</title>
     <style>
-        body { background: #0f0f0f; color: white; font-family: sans-serif; text-align: center; padding-top: 100px; }
-        .box { background: #1a1a1a; width: 300px; margin: auto; padding: 30px; border-radius: 15px; border: 2px solid #f1c40f; box-shadow: 0 0 20px rgba(241, 196, 15, 0.2); }
-        input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
-        button { background: #f1c40f; color: black; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        .sep { margin: 20px 0; border-top: 1px solid #333; }
+        :root { --primary: #f1c40f; --dark: #0f0f0f; --card: #1a1a1a; --text: #eee; }
+        body { background: var(--dark); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .container { background: var(--card); width: 350px; padding: 30px; border-radius: 20px; border: 1px solid var(--primary); text-align: center; }
+        .tabs { display: flex; justify-content: space-around; margin-bottom: 20px; cursor: pointer; }
+        .tab { padding: 10px; font-weight: bold; color: #777; }
+        .tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #222; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: var(--primary); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .error-msg { background: rgba(231, 76, 60, 0.2); color: #e74c3c; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e74c3c; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h1>SAMP SERVER</h1>
-        <form action="/login" method="POST">
-            <input name="username" placeholder="Nome de Usuário" required>
-            <input name="password" type="password" placeholder="Senha" required>
-            <button type="submit">ENTRAR</button>
-        </form>
-        <div class="sep"></div>
-        <form action="/register" method="POST">
-            <input name="username" placeholder="Escolha um Nome" required>
-            <input name="password" type="password" placeholder="Escolha uma Senha" required>
-            <button type="submit" style="background: #555; color: white;">CADASTRAR CONTA</button>
-        </form>
+    <div class="container">
+        <h2>SAMP SERVER</h2>
+        <% if(error) { %> <div class="error-msg"><%= error %></div> <% } %>
+        <div class="tabs">
+            <div class="tab active" onclick="openTab('login')">Login</div>
+            <div class="tab" onclick="openTab('reg')">Cadastro</div>
+            <div class="tab" onclick="openTab('rec')">Recuperar</div>
+        </div>
+        <div id="login" class="form-section active">
+            <form action="/login" method="POST">
+                <input name="username" placeholder="Usuário" required>
+                <input name="password" type="password" placeholder="Senha" required>
+                <button type="submit">ENTRAR</button>
+            </form>
+        </div>
+        <div id="reg" class="form-section">
+            <form action="/register" method="POST">
+                <input name="username" placeholder="Nome de Usuário" required>
+                <input name="email" type="email" placeholder="E-mail Real" required>
+                <input name="password" type="password" placeholder="Senha" required>
+                <button type="submit">CRIAR CONTA</button>
+            </form>
+        </div>
+        <div id="rec" class="form-section">
+            <form action="/forgot-password" method="POST">
+                <input name="email" type="email" placeholder="Seu E-mail cadastrado" required>
+                <button type="submit">SOLICITAR RECUPERAÇÃO</button>
+            </form>
+        </div>
     </div>
+    <script>
+        function openTab(tabId) {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
 </body>
 </html>
