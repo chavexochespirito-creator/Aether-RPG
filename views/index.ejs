@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SAMP Server - Login</title>
+    <style>
+        body { background: #0f0f0f; color: white; font-family: sans-serif; text-align: center; padding-top: 100px; }
+        .box { background: #1a1a1a; width: 300px; margin: auto; padding: 30px; border-radius: 15px; border: 2px solid #f1c40f; box-shadow: 0 0 20px rgba(241, 196, 15, 0.2); }
+        input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
+        button { background: #f1c40f; color: black; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        .sep { margin: 20px 0; border-top: 1px solid #333; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>SAMP SERVER</h1>
+        <form action="/login" method="POST">
+            <input name="username" placeholder="Nome de Usuário" required>
+            <input name="password" type="password" placeholder="Senha" required>
+            <button type="submit">ENTRAR</button>
+        </form>
+        <div class="sep"></div>
+        <form action="/register" method="POST">
+            <input name="username" placeholder="Escolha um Nome" required>
+            <input name="password" type="password" placeholder="Escolha uma Senha" required>
+            <button type="submit" style="background: #555; color: white;">CADASTRAR CONTA</button>
+        </form>
+    </div>
+</body>
+</html>
