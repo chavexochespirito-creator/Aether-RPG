@@ -3,19 +3,32 @@
 <head>
     <meta charset="UTF-8"><title>Pagamento Pix</title>
     <style>
-        body { background: #0f0f0f; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
-        .pix-box { background: #1a1a1a; width: 400px; margin: auto; padding: 30px; border-radius: 20px; border: 1px solid #f1c40f; }
-        .qr-fake { background: white; width: 200px; height: 200px; margin: 20px auto; display: flex; align-items: center; justify-content: center; color: black; font-weight: bold; border: 10px solid #f1c40f; }
-        .btn-back { background: #f1c40f; padding: 10px 20px; border-radius: 5px; text-decoration: none; color: black; font-weight: bold; display: inline-block; margin-top: 20px; }
+        body { background: #e0e0e0; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card-container { position: relative; width: 600px; height: 350px; }
+        .card-white { position: absolute; width: 350px; height: 200px; background: white; border-radius: 10px; left: 0; top: 0; box-shadow: 0 10px 20px rgba(0,0,0,0.1); display: flex; padding: 20px; align-items: center; justify-content: space-between; background-image: radial-gradient(#ddd 1px, transparent 1px); background-size: 20px 20px; }
+        .card-black { position: absolute; width: 350px; height: 200px; background: #222; border-radius: 10px; right: 0; bottom: 0; color: white; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: center; }
+        .qr-code { width: 120px; height: 120px; border: 2px solid #000; }
+        .info { text-align: left; }
+        .info h2 { margin: 0; font-size: 18px; color: #f1c40f; }
+        .btn-back { position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%); background: #f1c40f; padding: 10px 20px; border-radius: 5px; text-decoration: none; color: black; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="pix-box">
-        <h2>Confirmação de Compra</h2>
-        <p>Você está comprando <b><%= cashAmount %> Cash</b></p>
-        <p>Escaneie o QR Code (SIMULADO) abaixo:</p>
-        <div class="qr-fake">QR CODE FAKE</div>
-        <p>Após pagar, avise o ADM no Discord!</p>
+    <div class="card-container">
+        <div class="card-white">
+            <div class="info">
+                <h2 style="color: #333;">SAMP SERVER</h2>
+                <p style="font-size: 12px; color: #666;">Pagamento via Pix</p>
+                <p style="font-size: 14px; font-weight: bold;">Valor: R$ <%= (cashAmount/1000).toFixed(2) %></p>
+            </div>
+            <!-- Gerador de QR Code Fake Realista -->
+            <img class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SAMP_FAKE_PIX_<%= cashAmount %>">
+        </div>
+        <div class="card-black">
+            <h3 style="margin: 0;">Confirmação de Compra</h3>
+            <p style="font-size: 14px; color: #aaa;">Você está adquirindo <%= cashAmount %> moedas.</p>
+            <p style="font-size: 12px; color: #f1c40f;">Escaneie o código ao lado para pagar.</p>
+        </div>
         <a href="/shop" class="btn-back">VOLTAR PARA LOJA</a>
     </div>
 </body>
