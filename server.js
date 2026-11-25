@@ -3,16 +3,29 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const axios = require('axios');
 const app = express();
 
 const mongoURI = 'mongodb+srv://admin_samp:samp123@cluster0.2wi9tep.mongodb.net/samp_db?retryWrites=true&w=majority';
+const DISCORD_WEBHOOK_URL = 'SEU_LINK_DO_WEBHOOK_DISCORD';
+
+app.use(helmet());
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100
+});
+app.use(limiter);
+
 mongoose.connect(mongoURI);
 
 const User = mongoose.model('User', { 
     username: { type: String, unique: true }, 
     password: { type: String }, 
     email: { type: String, unique: true },
-    cash: { type: Number, default: 0 }
+    cash: { type: Number, default: 0 },
+    avatar: { type: String, default: 'https://cdn-icons-png.flaticon.com/512/149/149071.png' }
 });
 
 const Order = mongoose.model('Order', { 
@@ -26,13 +39,25 @@ const Order = mongoose.model('Order', {
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-    secret: 'samp-simulacao-secret',
+    secret: 'samp-ultra-secure-key',
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: mongoURI })
 }));
 
-// --- ROTAS ---
+async function sendDiscordNotification(message) {
+    try {
+        await axios.post(DISCORD_WEBHOOK_URL, {
+            embeds: [{
+                title: "💰 Nova Solicitação de Cash!",
+                description: message,
+                color: 16766720, // Amarelo
+                timestamp: new Date()
+            }]
+        });
+    } catch (e) { console.log("Erro Discord:", e); }
+}
+
 app.get('/', (req, res) => res.render('index', { error: null }));
 
 app.post('/register', async (req, res) => {
@@ -58,20 +83,16 @@ app.get('/shop', async (req, res) => {
     res.render('shop', { user });
 });
 
-// SIMULAÇÃO DE PAGAMENTO
 app.post('/create-payment', async (req, res) => {
-    const { cashAmount, amount } = req.body;
+    const { cashAmount } = req.body;
+    const amount = cashAmount / 1000; // 1000 moedas = 1 Real
     const username = req.session.user;
 
-    // Aqui, em vez de chamar o Mercado Pago, apenas criamos o pedido no banco
-    await Order.create({ 
-        username, 
-        amount, 
-        cashAmount, 
-        status: 'Pendente' 
-    });
+    await Order.create({ username, amount, cashAmount, status: 'Pendente' });
 
-    res.render('checkout', { cashAmount });
+    await sendDiscordNotification(`**Jogador:** ${username}\n**Quantidade:** ${cashAmount} Cash\n**Valor:** R$ ${amount.toFixed(2)}`);
+
+    res.render('checkout', { cashAmount, amount });
 });
 
 app.get('/admin', async (req, res) => {
