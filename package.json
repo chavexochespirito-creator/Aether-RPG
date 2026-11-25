@@ -1,6 +1,6 @@
 {
-  "name": "samp-pro-portal",
-  "version": "3.0.0",
+  "name": "samp-simulador-pro",
+  "version": "5.0.0",
   "main": "server.js",
   "dependencies": {
     "express": "^4.18.2",
