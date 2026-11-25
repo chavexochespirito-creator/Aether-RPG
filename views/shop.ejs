@@ -1,41 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Loja SAMP</title>
+    <meta charset="UTF-8"><title>Loja VIP - SAMP</title>
     <style>
-        body { background: #0f0f0f; color: white; font-family: sans-serif; text-align: center; }
-        .header { background: #1a1a1a; padding: 20px; border-bottom: 3px solid #f1c40f; }
-        .container { display: flex; justify-content: center; gap: 20px; margin-top: 50px; flex-wrap: wrap; }
-        .card { background: #1a1a1a; padding: 20px; border-radius: 10px; border: 1px solid #f1c40f; width: 200px; }
-        button { background: #f1c40f; padding: 10px; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; width: 100%; }
-        .pix { color: #f1c40f; font-weight: bold; margin: 20px; font-size: 1.2em; }
+        :root { --primary: #f1c40f; --dark: #0f0f0f; --card: #1a1a1a; }
+        body { background: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        nav { background: var(--card); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); }
+        .container { display: flex; justify-content: center; gap: 30px; padding: 50px; flex-wrap: wrap; }
+        .card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid #333; width: 250px; text-align: center; }
+        button { width: 100%; padding: 12px; background: var(--primary); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .pix-box { background: #222; padding: 20px; border-radius: 15px; max-width: 600px; margin: 0 auto 40px; border: 1px dashed var(--primary); text-align: center; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Bem-vindo, <%= user.username %>!</h1>
-        <p>Seu Saldo Atual: <b style="color: #f1c40f;">$<%= user.cash %></b></p>
-        <a href="/logout" style="color: red;">Sair da Conta</a>
+    <nav>
+        <div style="font-size: 20px; font-weight: bold; color: var(--primary);">SAMP SERVER</div>
+        <div class="nav-links">
+            <span>Olá, <%= user.username %> | <b>$<%= user.cash %></b></span>
+            <a href="/logout" style="color: #e74c3c; margin-left: 20px; text-decoration: none;">Sair</a>
+        </div>
+    </nav>
+    <div class="pix-box">
+        <p>🔑 <b>CHAVE PIX PARA PAGAMENTO:</b></p>
+        <h2 style="color: var(--primary);">COLOQUE_SEU_PIX_AQUI</h2>
     </div>
-
-    <div class="pix">🔑 CHAVE PIX PARA PAGAMENTO: (COLOQUE SEU PIX AQUI)</div>
-
     <div class="container">
         <div class="card">
-            <h3>1.000 Cash</h3>
-            <p>Valor: R$ 10,00</p>
-            <form action="/buy" method="POST">
-                <input type="hidden" name="amount" value="1000">
-                <button type="submit">COMPRAR</button>
-            </form>
+            <h3>1.000 Cash</h3><p>R$ 10,00</p>
+            <form action="/buy" method="POST"><input type="hidden" name="amount" value="1000"><button type="submit">COMPRAR</button></form>
         </div>
         <div class="card">
-            <h3>5.000 Cash</h3>
-            <p>Valor: R$ 40,00</p>
-            <form action="/buy" method="POST">
-                <input type="hidden" name="amount" value="5000">
-                <button type="submit">COMPRAR</button>
-            </form>
+            <h3>5.000 Cash</h3><p>R$ 40,00</p>
+            <form action="/buy" method="POST"><input type="hidden" name="amount" value="5000"><button type="submit">COMPRAR</button></form>
         </div>
     </div>
 </body>
