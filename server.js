@@ -6,7 +6,6 @@ const MongoStore = require('connect-mongo');
 const app = express();
 
 const mongoURI = 'mongodb+srv://admin_samp:samp123@cluster0.2wi9tep.mongodb.net/samp_db?retryWrites=true&w=majority';
-
 mongoose.connect(mongoURI);
 
 const User = mongoose.model('User', { 
@@ -19,26 +18,21 @@ const User = mongoose.model('User', {
 const Order = mongoose.model('Order', { 
     username: String, 
     amount: Number, 
+    cashAmount: Number,
     status: { type: String, default: 'Pendente' },
     date: { type: Date, default: Date.now }
-});
-
-const RecoveryRequest = mongoose.model('RecoveryRequest', {
-    username: String,
-    email: String,
-    date: { type: Date, default: Date.now },
-    status: { type: String, default: 'Pendente' }
 });
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-    secret: 'samp-ultra-secret',
+    secret: 'samp-simulacao-secret',
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: mongoURI })
 }));
 
+// --- ROTAS ---
 app.get('/', (req, res) => res.render('index', { error: null }));
 
 app.post('/register', async (req, res) => {
@@ -58,53 +52,41 @@ app.post('/login', async (req, res) => {
     } else { res.render('index', { error: 'Usuário ou senha incorretos!' }); }
 });
 
-app.post('/forgot-password', async (req, res) => {
-    const { email } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) return res.render('index', { error: 'E-mail não cadastrado!' });
-    await RecoveryRequest.create({ username: user.username, email: email });
-    res.render('index', { error: 'Pedido enviado! O ADM entrará em contato via Discord.' });
-});
-
 app.get('/shop', async (req, res) => {
     if (!req.session.user) return res.redirect('/');
     const user = await User.findOne({ username: req.session.user });
     res.render('shop', { user });
 });
 
-app.post('/buy', async (req, res) => {
-    await Order.create({ username: req.session.user, amount: req.body.amount });
-    res.redirect('/shop');
+// SIMULAÇÃO DE PAGAMENTO
+app.post('/create-payment', async (req, res) => {
+    const { cashAmount, amount } = req.body;
+    const username = req.session.user;
+
+    // Aqui, em vez de chamar o Mercado Pago, apenas criamos o pedido no banco
+    await Order.create({ 
+        username, 
+        amount, 
+        cashAmount, 
+        status: 'Pendente' 
+    });
+
+    res.render('checkout', { cashAmount });
 });
 
 app.get('/admin', async (req, res) => {
-    const query = req.query.search || '';
-    const orders = await Order.find({ status: 'Pendente' });
-    const users = await User.find({ username: new RegExp(query, 'i') });
-    const recoveries = await RecoveryRequest.find({ status: 'Pendente' });
-    const revenueData = await Order.aggregate([{ $match: { status: 'Aprovado' } }, { $group: { _id: null, total: { $sum: '$amount' } } }]);
-    const totalRevenue = revenueData[0]?.total || 0;
-    res.render('admin', { orders, users, recoveries, totalRevenue, query });
+    const orders = await Order.find().sort({ date: -1 });
+    const users = await User.find();
+    const revenue = await Order.aggregate([{ $match: { status: 'Aprovado' } }, { $group: { _id: null, total: { $sum: '$amount' } } }]);
+    res.render('admin', { orders, users, totalRevenue: revenue[0]?.total || 0 });
 });
 
 app.post('/approve', async (req, res) => {
     const order = await Order.findById(req.body.id);
     if (order) {
-        await User.findOneAndUpdate({ username: order.username }, { $inc: { cash: order.amount } });
+        await User.findOneAndUpdate({ username: order.username }, { $inc: { cash: order.cashAmount } });
         order.status = 'Aprovado';
         await order.save();
-    }
-    res.redirect('/admin');
-});
-
-app.post('/admin/reset-pass', async (req, res) => {
-    const { requestId, newPassword } = req.body;
-    const request = await RecoveryRequest.findById(requestId);
-    if (request) {
-        const hashedPass = await bcrypt.hash(newPassword, 10);
-        await User.findOneAndUpdate({ username: request.username }, { password: hashedPass });
-        request.status = 'Resolvido';
-        await request.save();
     }
     res.redirect('/admin');
 });
