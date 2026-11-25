@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8"><title>Pagamento Pix</title>
+    <style>
+        body { background: #0f0f0f; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
+        .pix-box { background: #1a1a1a; width: 400px; margin: auto; padding: 30px; border-radius: 20px; border: 1px solid #f1c40f; }
+        .qr-fake { background: white; width: 200px; height: 200px; margin: 20px auto; display: flex; align-items: center; justify-content: center; color: black; font-weight: bold; border: 10px solid #f1c40f; }
+        .btn-back { background: #f1c40f; padding: 10px 20px; border-radius: 5px; text-decoration: none; color: black; font-weight: bold; display: inline-block; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="pix-box">
+        <h2>Confirmação de Compra</h2>
+        <p>Você está comprando <b><%= cashAmount %> Cash</b></p>
+        <p>Escaneie o QR Code (SIMULADO) abaixo:</p>
+        <div class="qr-fake">QR CODE FAKE</div>
+        <p>Após pagar, avise o ADM no Discord!</p>
+        <a href="/shop" class="btn-back">VOLTAR PARA LOJA</a>
+    </div>
+</body>
+</html>
