@@ -1,38 +1,50 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8"><title>Loja VIP - SAMP</title>
+    <meta charset="UTF-8"><title>Loja SAMP</title>
     <style>
-        :root { --primary: #f1c40f; --dark: #0f0f0f; --card: #1a1a1a; }
-        body { background: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; }
-        nav { background: var(--card); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); }
-        .container { display: flex; justify-content: center; gap: 30px; padding: 50px; flex-wrap: wrap; }
-        .card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid #333; width: 250px; text-align: center; }
-        button { width: 100%; padding: 12px; background: var(--primary); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .pix-box { background: #222; padding: 20px; border-radius: 15px; max-width: 600px; margin: 0 auto 40px; border: 1px dashed var(--primary); text-align: center; }
+        body { background: #0f0f0f; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; }
+        nav { background: #1a1a1a; padding: 20px; display: flex; justify-content: space-between; border-bottom: 2px solid #f1c40f; }
+        .shop-container { display: flex; justify-content: center; align-items: center; height: 80vh; flex-direction: column; }
+        .cash-selector { background: #1a1a1a; padding: 40px; border-radius: 20px; border: 1px solid #f1c40f; }
+        .counter { display: flex; justify-content: center; align-items: center; gap: 20px; margin: 20px 0; }
+        .btn-count { background: #f1c40f; border: none; width: 50px; height: 50px; border-radius: 50%; font-size: 24px; font-weight: bold; cursor: pointer; }
+        #cash-value { font-size: 40px; font-weight: bold; min-width: 150px; }
+        .price-tag { font-size: 20px; color: #aaa; margin-bottom: 20px; }
+        .btn-buy { width: 200px; padding: 15px; background: #f1c40f; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 18px; }
     </style>
 </head>
 <body>
     <nav>
-        <div style="font-size: 20px; font-weight: bold; color: var(--primary);">SAMP SERVER</div>
-        <div class="nav-links">
-            <span>Olá, <%= user.username %> | <b>$<%= user.cash %></b></span>
-            <a href="/logout" style="color: #e74c3c; margin-left: 20px; text-decoration: none;">Sair</a>
-        </div>
+        <div style="color: #f1c40f; font-weight: bold;">SAMP SERVER</div>
+        <div>Olá, <%= user.username %> | <b>$<%= user.cash %></b> | <a href="/logout" style="color: red; text-decoration: none;">Sair</a></div>
     </nav>
-    <div class="pix-box">
-        <p>🔑 <b>CHAVE PIX PARA PAGAMENTO:</b></p>
-        <h2 style="color: var(--primary);">COLOQUE_SEU_PIX_AQUI</h2>
-    </div>
-    <div class="container">
-        <div class="card">
-            <h3>1.000 Cash</h3><p>R$ 10,00</p>
-            <form action="/buy" method="POST"><input type="hidden" name="amount" value="1000"><button type="submit">COMPRAR</button></form>
+    <div class="shop-container">
+        <h1>Quanto de Cash você deseja?</h1>
+        <div class="cash-selector">
+            <div class="counter">
+                <button class="btn-count" onclick="changeCash(-100)">-</button>
+                <div id="cash-value">1000</div>
+                <button class="btn-count" onclick="changeCash(100)">+</button>
+            </div>
+            <div class="price-tag">Valor: R$ <span id="price">10.00</span></div>
+            <form action="/create-payment" method="POST">
+                <input type="hidden" name="cashAmount" id="input-cash" value="1000">
+                <input type="hidden" name="amount" id="input-price" value="10.00">
+                <button class="btn-buy" type="submit">CONFIRMAR COMPRA</button>
+            </form>
         </div>
-        <div class="card">
-            <h3>5.000 Cash</h3><p>R$ 40,00</p>
-            <form action="/buy" method="POST"><input type="hidden" name="amount" value="5000"><button type="submit">COMPRAR</button></form>
-        </div>
     </div>
+    <script>
+        let cash = 1000;
+        function changeCash(val) {
+            cash += val;
+            if(cash < 100) cash = 100;
+            document.getElementById('cash-value').innerText = cash;
+            document.getElementById('input-cash').value = cash;
+            document.getElementById('price').innerText = (cash / 100).toFixed(2);
+            document.getElementById('input-price').value = (cash / 100).toFixed(2);
+        }
+    </script>
 </body>
 </html>
