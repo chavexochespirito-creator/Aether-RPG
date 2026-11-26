@@ -1,82 +1,26 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagamento Pix - SAMP</title>
+    <meta charset="UTF-8"><title>Pagamento Pix</title>
     <style>
-        body { background: radial-gradient(circle at center, #2c3e50 0%, #000 100%); color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
-        
-        .payment-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; gap: 30px; }
-        
-        /* O Cartão de Pagamento */
-        .payment-card { 
-            background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(20px); 
-            width: 450px; 
-            padding: 40px; 
-            border-radius: 30px; 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5); 
-            text-align: center; 
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .payment-card h2 { font-size: 28px; margin-bottom: 10px; color: #f1c40f; }
-        .payment-card p { color: #bbb; font-size: 16px; margin-bottom: 30px; }
-
-        /* Área do QR Code */
-        .qr-container { 
-            background: white; 
-            padding: 15px; 
-            border-radius: 20px; 
-            display: inline-block; 
-            box-shadow: 0 0 30px rgba(241, 196, 15, 0.3);
-            margin-bottom: 30px;
-            transition: 0.3s;
-        }
-        .qr-container:hover { transform: scale(1.05); }
+        body { background: radial-gradient(circle at center, #2c3e50 0%, #000 100%); color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .payment-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); width: 450px; padding: 40px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        .qr-container { background: white; padding: 15px; border-radius: 20px; display: inline-block; margin-bottom: 30px; }
         .qr-code { width: 200px; height: 200px; display: block; }
-
-        .payment-info { margin-bottom: 30px; }
-        .payment-info b { color: #f1c40f; font-size: 20px; }
-
-        .btn-back { 
-            background: transparent; 
-            color: #aaa; 
-            text-decoration: none; 
-            font-size: 14px; 
-            border: 1px solid #444; 
-            padding: 10px 20px; 
-            border-radius: 10px; 
-            transition: 0.3s; 
-        }
-        .btn-back:hover { color: white; border-color: white; background: rgba(255,255,255,0.1); }
+        .btn-back { background: transparent; color: #aaa; text-decoration: none; font-size: 14px; border: 1px solid #444; padding: 10px 20px; border-radius: 10px; transition: 0.3s; }
+        .btn-back:hover { color: white; border-color: white; }
     </style>
 </head>
 <body>
-    <div class="payment-wrapper">
-        <div class="payment-card">
-            <h2>Confirmação de Compra</h2>
-            <p>Seu pedido de <b><%= cashAmount %> moedas</b> foi gerado.</p>
-            
-            <div class="payment-info">
-                Valor a pagar: <b>R$ <%= (cashAmount/1000).toFixed(2) %></b>
-            </div>
-
-            <div class="qr-container">
-                <!-- QR Code Gerado via API para ser real e bonito -->
-                <img class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=SAMP_PIX_<%= cashAmount %>" alt="QR Code Pix">
-            </div>
-
-            <p style="font-size: 13px; color: #888; margin-bottom: 30px;">
-                Escaneie o código acima com seu app do banco.<br>
-                O saldo cairá automaticamente após a aprovação.
-            </p>
-
-            <a href="/shop" class="btn-back">← Voltar para a Loja</a>
+    <div class="payment-card">
+        <h2 style="color: #f1c40f;">Confirmação de Compra</h2>
+        <p>Você está adquirindo <b><%= cashAmount %> moedas</b></p>
+        <p>Valor: <b>R$ <%= (cashAmount/1000).toFixed(2) %></b></p>
+        <div class="qr-container">
+            <img class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=SAMP_PIX_<%= cashAmount %>">
         </div>
+        <p style="font-size: 13px; color: #888; margin-bottom: 30px;">Escaneie o código acima para pagar.</p>
+        <a href="/shop" class="btn-back">← Voltar para a Loja</a>
     </div>
 </body>
 </html>
