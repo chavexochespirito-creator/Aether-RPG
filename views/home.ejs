@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aether RPG - Home</title>
+    <style>
+        body { background: #050a0f; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden; }
+        nav { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00a2ff; position: sticky; top: 0; z-index: 100; }
+        .nav-logo { color: white; font-weight: 800; font-size: 22px; }
+        .nav-logo span { color: #00a2ff; }
+        .hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://via.placeholder.com/1920x1080'); background-size: cover; background-position: center; }
+        .hero-content { max-width: 800px; padding: 20px; }
+        .hero-content h1 { font-size: 64px; margin-bottom: 20px; line-height: 1.1; }
+        .hero-content h1 span { color: #00a2ff; }
+        .hero-content p { font-size: 18px; color: #ccc; margin-bottom: 40px; }
+        .btn-explore { padding: 18px 40px; background: #00a2ff; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 18px; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-explore:hover { background: #0086d1; transform: scale(1.05); box-shadow: 0 0 20px rgba(0, 162, 255, 0.4); }
+        .toast { position: fixed; top: 20px; right: -400px; background: #0f172a; border-left: 5px solid #2ecc71; color: white; padding: 15px 25px; border-radius: 12px; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; border: 1px solid rgba(46, 204, 113, 0.2); }
+        .toast-icon { background: #2ecc71; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .toast-content strong { display: block; color: #2ecc71; font-size: 16px; }
+        .toast-content span { font-size: 13px; color: #aaa; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-logo">AETHER<span>RPG</span></div>
+        <div class="nav-links"><a href="/shop" style="color: white; text-decoration: none; font-weight: bold;">Loja</a> | <a href="/logout" style="color: #ff4757; text-decoration: none; margin-left: 15px;">Sair</a></div>
+    </nav>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Eleve sua <br><span>Experiência</span> no SAMP</h1>
+            <p>Acessórios exclusivos, veículos premium e vantagens únicas para transformar sua jornada no servidor.</p>
+            <a href="/shop" class="btn-explore">Explorar Loja ➔</a>
+        </div>
+    </div>
+    <div id="welcome-toast" class="toast">
+        <div class="toast-icon">✓</div>
+        <div class="toast-content">
+            <strong>Bem-vindo(a) Aether RPG!</strong>
+            <span>Sua melhor experiência começa aqui.</span>
+        </div>
+    </div>
+    <script>
+        window.onload = () => {
+            const toast = document.getElementById('welcome-toast');
+            setTimeout(() => { toast.style.right = '20px'; }, 1000);
+            setTimeout(() => { toast.style.right = '-400px'; }, 6000);
+        };
+    </script>
+</body>
+</html>
