@@ -30,18 +30,18 @@
         <% if(error) { %> <div class="error-msg"><%= error %></div> <% } %>
         <div id="login-section" class="form-section active">
             <form action="/login" method="POST">
-                <div class="input-group"><label>Usuário</label><input name="username" required></div>
-                <div class="input-group"><label>Senha</label><input name="password" type="password" required></div>
+                <div class="input-group"><label>Usuário</label><input name="username" placeholder="Digite seu usuário" required></div>
+                <div class="input-group"><label>Senha</label><input name="password" type="password" placeholder="Sua senha de acesso" required></div>
                 <div class="options"><label><input type="checkbox"> Lembrar de mim</label><a href="/terms" style="color:#00a2ff; text-decoration:none;">Esqueceu a senha?</a></div>
                 <button type="submit" class="btn-main">Entrar na Elite ➔</button>
             </form>
         </div>
         <div id="reg-section" class="form-section">
             <form action="/register" method="POST">
-                <div class="input-group"><label>Nome de Usuário</label><input name="username" required></div>
-                <div class="input-group"><label>E-mail</label><input name="email" type="email" required></div>
-                <div class="input-group"><label>Senha</label><input name="password" type="password" required></div>
-                <button type="submit" class="btn-main">Criar Conta Agora</button>
+                <div class="input-group"><label>Nome de Usuário</label><input name="username" placeholder="Escolha um usuário" required></div>
+                <div class="input-group"><label>E-mail</label><input name="email" type="email" placeholder="Seu melhor e-mail" required></div>
+                <div class="input-group"><label>Senha</label><input name="password" type="password" placeholder="Crie uma senha forte" required></div>
+                <button type="submit" class="btn-//main">Criar Conta Agora</button>
             </form>
         </div>
         <div class="footer-text">Não tem uma conta? <a href="javascript:void(0)" onclick="toggleAuth()">Criar conta no servidor</a></div>
