@@ -30,28 +30,36 @@ const Order = mongoose.model('Order', {
     date: { type: Date, default: Date.now }
 });
 
+const Ticket = mongoose.model('Ticket', {
+    username: String,
+    subject: String,
+    message: String,
+    adminResponse: { type: String, default: '' },
+    status: { type: String, default: 'Aberto' },
+    date: { type: Date, default: Date.now }
+});
+
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(session({
-    secret: 'samp-ultra-secure-key',
+    secret: 'aether-secret-key',
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: mongoURI })
 }));
 
-app.get('/', (req, res) => res.render('index', { error: null }));
+app.get('/', (req, res) => res.render('loading'));
+app.get('/auth', (req, res) => res.render('index', { error: null }));
+app.get('/terms', (req, res) => res.render('terms'));
 
 app.post('/register', async (req, res) => {
     try {
         const { username, password, email } = req.body;
-        if(!username || !password || !email) return res.render('index', { error: 'Preencha todos os campos!' });
         const hashedPass = await bcrypt.hash(password, 10);
         await User.create({ username, password: hashedPass, email });
-        res.render('index', { error: 'Conta criada com sucesso! Faça login.' });
-    } catch (e) {
-        res.render('index', { error: 'Erro: Usuário ou E-mail já existem.' });
-    }
+        res.render('index', { error: 'Conta criada! Faça login.' });
+    } catch (e) { res.render('index', { error: 'Erro: Usuário ou E-mail já existem.' }); }
 });
 
 app.post('/login', async (req, res) => {
@@ -60,30 +68,42 @@ app.post('/login', async (req, res) => {
     if (user && await bcrypt.compare(password, user.password)) {
         req.session.user = user.username;
         res.redirect('/shop');
-    } else {
-        res.render('index', { error: 'Usuário ou senha incorretos!' });
-    }
+    } else { res.render('index', { error: 'Usuário ou senha incorretos!' }); }
 });
 
 app.get('/shop', async (req, res) => {
-    if (!req.session.user) return res.redirect('/');
+    if (!req.session.user) return res.redirect('/auth');
     const user = await User.findOne({ username: req.session.user });
     res.render('shop', { user });
 });
 
 app.post('/create-payment', async (req, res) => {
     const { cashAmount } = req.body;
-    const amount = cashAmount / 1000; // 1000 moedas = 1 Real
+    const amount = cashAmount / 1000;
     const username = req.session.user;
     await Order.create({ username, amount, cashAmount, status: 'Pendente' });
     res.render('checkout', { cashAmount, amount });
 });
 
+app.get('/tickets', async (req, res) => {
+    if (!req.session.user) return res.redirect('/auth');
+    const tickets = await Ticket.find({ username: req.session.user }).sort({ date: -1 });
+    res.render('tickets', { tickets, user: req.session.user });
+});
+
+app.post('/tickets/create', async (req, res) => {
+    if (!req.session.user) return res.redirect('/auth');
+    const { subject, message } = req.body;
+    await Ticket.create({ username: req.session.user, subject, message });
+    res.redirect('/tickets');
+});
+
 app.get('/admin', async (req, res) => {
     const orders = await Order.find().sort({ date: -1 });
     const users = await User.find();
+    const tickets = await Ticket.find().sort({ date: -1 });
     const revenue = await Order.aggregate([{ $match: { status: 'Aprovado' } }, { $group: { _id: null, total: { $sum: '$amount' } } }]);
-    res.render('admin', { orders, users, totalRevenue: revenue[0]?.total || 0 });
+    res.render('admin', { orders, users, tickets, totalRevenue: revenue[0]?.total || 0 });
 });
 
 app.post('/approve', async (req, res) => {
@@ -96,5 +116,11 @@ app.post('/approve', async (req, res) => {
     res.redirect('/admin');
 });
 
-app.get('/logout', (req, res) => { req.session.destroy(); res.redirect('/'); });
+app.post('/admin/respond-ticket', async (req, res) => {
+    const { ticketId, response } = req.body;
+    await Ticket.findByIdAndUpdate(ticketId, { adminResponse: response, status: 'Fechado' });
+    res.redirect('/admin');
+});
+
+app.get('/logout', (req, res) => { req.session.destroy(); res.redirect('/auth'); });
 app.listen(process.env.PORT || 3000);
