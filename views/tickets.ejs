@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8"><title>Suporte - SAMP</title>
+    <style>
+        body { background: #0a0a0a; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 40px; }
+        .container { max-width: 800px; margin: auto; }
+        .ticket-form { background: #1a1a1a; padding: 30px; border-radius: 20px; border: 1px solid #f1c40f; margin-bottom: 40px; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #222; color: white; box-sizing: border-box; }
+        button { background: #f1c40f; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .ticket-card { background: #151515; padding: 20px; border-radius: 15px; border-left: 5px solid #f1c40f; margin-bottom: 20px; }
+        .status-aberto { color: #2ecc71; font-weight: bold; }
+        .status-fechado { color: #e74c3c; font-weight: bold; }
+        .response { background: #222; padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px solid #333; color: #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Central de Suporte</h1>
+        <div class="ticket-form">
+            <h3>Abrir Novo Ticket</h3>
+            <form action="/tickets/create" method="POST">
+                <input name="subject" placeholder="Assunto" required>
+                <textarea name="message" rows="4" placeholder="Descreva seu problema..." required></textarea>
+                <button type="submit">ENVIAR TICKET</button>
+            </form>
+        </div>
+        <h2>Meus Tickets</h2>
+        <% tickets.forEach(t => { %>
+            <div class="ticket-card">
+                <div style="display: flex; justify-content: space-between;">
+                    <strong><%= t.subject %></strong>
+                    <span class="<%= t.status === 'Aberto' ? 'status-aberto' : 'status-fechado' %>"><%= t.status %></span>
+                </div>
+                <p><%= t.message %></p>
+                <% if(t.adminResponse) { %>
+                    <div class="response"><strong>Resposta do ADM:</strong><br><%= t.adminResponse %></div>
+                <% } %>
+            </div>
+        <% }) %>
+        <br><a href="/shop" style="color: #f1c40f; text-decoration: none;">← Voltar para Loja</a>
+    </div>
+</body>
+</html>
