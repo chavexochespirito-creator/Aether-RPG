@@ -1,35 +1,34 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8"><title>Loja Premium - SAMP</title>
+    <meta charset="UTF-8"><title>Aether Marketplace</title>
     <style>
-        :root { --primary: #f1c40f; --bg: #0a0a0a; --card-bg: #151515; }
-        body { background: radial-gradient(circle at top, #1a1a1a 0%, var(--bg) 100%); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; min-height: 100vh; }
-        nav { background: rgba(20, 20, 20, 0.8); backdrop-filter: blur(10px); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 100; }
-        .nav-logo { color: var(--primary); font-weight: 800; font-size: 22px; }
-        .nav-user { font-size: 14px; display: flex; align-items: center; gap: 15px; }
-        .btn-logout { color: #ff4757; text-decoration: none; font-weight: bold; }
+        :root { --primary: #00a2ff; --bg: #050a0f; --card-bg: #0f172a; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        nav { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 100; }
+        .nav-logo { color: white; font-weight: 800; font-size: 22px; }
+        .nav-logo span { color: var(--primary); }
         .shop-container { display: flex; flex-direction: column; align-items: center; padding: 60px 20px; }
         .packages-grid { display: flex; gap: 25px; justify-content: center; margin-bottom: 60px; flex-wrap: wrap; }
-        .package-card { background: var(--card-bg); width: 240px; padding: 30px; border-radius: 25px; border: 1px solid #333; text-align: center; transition: 0.4s; cursor: pointer; }
-        .package-card:hover { border-color: var(--primary); transform: translateY(-10px); }
-        .package-card img { width: 110px; height: 110px; margin-bottom: 20px; }
+        .package-card { background: var(--card-bg); width: 240px; padding: 30px; border-radius: 25px; border: 1px solid #1e293b; text-align: center; transition: 0.4s; cursor: pointer; }
+        .package-card:hover { border-color: var(--primary); transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0, 162, 255, 0.2); }
+        .package-card img { width: 100px; height: 100px; margin-bottom: 20px; }
         .package-card h3 { color: var(--primary); margin: 10px 0; }
-        .cash-selector { background: rgba(25, 25, 25, 0.9); padding: 50px; border-radius: 40px; border: 1px solid rgba(241, 196, 15, 0.3); text-align: center; backdrop-filter: blur(10px); max-width: 500px; width: 90%; }
+        .cash-selector { background: #0f172a; padding: 50px; border-radius: 40px; border: 1px solid rgba(0, 162, 255, 0.3); text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.6); max-width: 500px; width: 90%; }
         .counter { display: flex; justify-content: center; align-items: center; gap: 40px; margin: 30px 0; }
-        .btn-count { background: var(--primary); border: none; width: 65px; height: 65px; border-radius: 50%; font-size: 30px; font-weight: bold; cursor: pointer; }
+        .btn-count { background: var(--primary); border: none; width: 65px; height: 65px; border-radius: 50%; font-size: 30px; font-weight: bold; cursor: pointer; color: white; }
         #cash-value { font-size: 60px; font-weight: 800; min-width: 200px; }
         .price-tag { font-size: 22px; color: #888; margin-bottom: 30px; }
-        .btn-buy { width: 100%; padding: 18px; background: linear-gradient(45deg, #d4ac0d, var(--primary)); border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 20px; color: #000; }
+        .btn-buy { width: 100%; padding: 18px; background: var(--primary); border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 20px; color: white; }
     </style>
 </head>
 <body>
     <nav>
-        <div class="nav-logo">SAMP PREMIUM</div>
-        <div class="nav-user">Olá, <%= user.username %> | <b>$<%= user.cash %></b> | <a href="/logout" class="btn-logout">Sair</a></div>
+        <div class="nav-logo">AETHER<span>RPG</span></div>
+        <div class="nav-user">Olá, <%= user.username %> | <b>$<%= user.cash %></b> | <a href="/logout" style="color: #ff4757; text-decoration: none; margin-left: 20px;">Sair</a></div>
     </nav>
     <div class="shop-container">
-        <h1>Escolha seu Pacote de Cash</h1>
+        <h1>Aether Marketplace</h1>
         <div class="packages-grid">
             <div class="package-card" onclick="setCash(1000)">
                 <img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png">
