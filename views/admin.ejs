@@ -1,32 +1,32 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8"><title>SAMP Admin Pro</title>
+    <meta charset="UTF-8"><title>Aether Admin</title>
     <style>
-        body { background: #0f0f0f; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; }
-        .sidebar { width: 260px; background: #111; height: 100vh; padding: 20px; border-right: 3px solid #f1c40f; position: fixed; }
+        body { background: #050a0f; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; }
+        .sidebar { width: 260px; background: #0f172a; height: 100vh; padding: 20px; border-right: 3px solid #00a2ff; position: fixed; }
         .main { margin-left: 260px; padding: 40px; width: 100%; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .stat-card { background: #1a1a1a; padding: 25px; border-radius: 20px; border-bottom: 5px solid #f1c40f; }
-        .stat-card h4 { color: #aaa; margin: 0; font-size: 14px; }
-        .stat-card p { font-size: 32px; font-weight: bold; margin: 10px 0 0; color: #f1c40f; }
-        table { width: 100%; border-collapse: collapse; background: #1a1a1a; border-radius: 15px; overflow: hidden; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #333; }
-        th { background: #f1c40f; color: black; }
+        .stat-card { background: #0f172a; padding: 25px; border-radius: 20px; border-bottom: 5px solid #00a2ff; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .stat-card h4 { color: #94a3b8; margin: 0; font-size: 14px; text-transform: uppercase; }
+        .stat-card p { font-size: 32px; font-weight: bold; margin: 10px 0 0; color: #00a2ff; }
+        table { width: 100%; border-collapse: collapse; background: #0f172a; border-radius: 15px; overflow: hidden; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #1e293b; }
+        th { background: #00a2ff; color: white; font-weight: bold; }
         .btn-approve { background: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <h2 style="color: #f1c40f;">SAMP ADMIN</h2>
+        <h2 style="color: #00a2ff;">AETHER ADMIN</h2>
         <div style="margin-top: 40px; line-height: 3;">
-            <div style="color: #f1c40f; font-weight: bold;">📊 Dashboard</div>
+            <div style="color: #00a2ff; font-weight: bold;">📊 Dashboard</div>
             <div>👥 Usuários</div>
             <div>💰 Financeiro</div>
         </div>
     </div>
     <div class="main">
-        <h1>Painel de Controle Premium</h1>
+        <h1>Painel de Controle Elite</h1>
         <div class="stats-grid">
             <div class="stat-card"><h4>Faturamento Total</h4><p>R$ <%= totalRevenue %></p></div>
             <div class="stat-card"><h4>Jogadores Ativos</h4><p><%= users.length %></p></div>
