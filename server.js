@@ -13,7 +13,7 @@ app.use(helmet({ contentSecurityPolicy: false }));
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
 app.use(limiter);
 
-mongoose.connect(mongoURI).then(() => console.log("Aether RPG Conectado!")).catch(err => console.log("Erro:", err));
+mongoose.connect(mongoURI).then(() => console.log("Aether RPG Marketplace Online!"));
 
 const User = mongoose.model('User', { 
     username: { type: String, unique: true, required: true }, 
@@ -22,36 +22,33 @@ const User = mongoose.model('User', {
     cash: { type: Number, default: 0 }
 });
 
-const Order = mongoose.model('Order', { 
-    username: String, 
-    amount: Number, 
-    cashAmount: Number,
-    status: { type: String, default: 'Pendente' },
-    date: { type: Date, default: Date.now }
+const Item = mongoose.model('Item', {
+    id: String, name: String, price: Number, category: String, image: String, description: String
 });
 
-const Item = mongoose.model('Item', {
-    id: String,
-    name: String,
-    price: Number,
-    category: String,
-    image: String,
-    description: String
-});
+const Category = mongoose.model('Category', { name: String, description: String });
 
 const Coupon = mongoose.model('Coupon', {
     code: { type: String, unique: true },
     discount: Number,
-    type: String,
+    type: { type: String, default: 'percent' },
     maxUses: Number,
     expiry: Date
+});
+
+const Order = mongoose.model('Order', { 
+    username: String, 
+    items: Array,
+    total: Number,
+    status: { type: String, default: 'Pendente' },
+    date: { type: Date, default: Date.now }
 });
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(session({
-    secret: 'aether-elite-key',
+    secret: 'aether-elite-secret',
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: mongoURI })
@@ -59,7 +56,10 @@ app.use(session({
 
 app.get('/', (req, res) => res.render('loading'));
 app.get('/auth', (req, res) => res.render('index', { error: null }));
-app.get('/terms', (req, res) => res.render('terms'));
+app.get('/home', (req, res) => {
+    if (!req.session.user) return res.redirect('/auth');
+    res.render('home');
+});
 
 app.post('/register', async (req, res) => {
     try {
@@ -75,41 +75,61 @@ app.post('/login', async (req, res) => {
     const user = await User.findOne({ username });
     if (user && await bcrypt.compare(password, user.password)) {
         req.session.user = user.username;
-        res.redirect('/shop');
+        res.redirect('/home');
     } else { res.render('index', { error: 'Usuário ou senha incorretos!' }); }
 });
 
 app.get('/shop', async (req, res) => {
     if (!req.session.user) return res.redirect('/auth');
-    const user = await User.findOne({ username: req.session.user });
     const items = await Item.find();
-    res.render('shop', { user, items });
+    const categories = await Category.find();
+    res.render('shop', { user: req.session.user, items, categories });
 });
 
-app.post('/create-payment', async (req, res) => {
-    const { cashAmount } = req.body;
-    const amount = cashAmount / 1000;
+app.post('/add-to-cart', (req, res) => {
+    if (!req.session.cart) req.session.cart = [];
+    const { itemId } = req.body;
+    req.session.cart.push(itemId);
+    res.redirect('/shop');
+});
+
+app.get('/checkout', async (req, res) => {
+    if (!req.session.user) return res.//redirect('/auth');
+    const cartIds = req.session.cart || [];
+    const items = await Item.find({ id: { $in: cartIds } });
+    const total = items.reduce((sum, item) => sum + item.price, 0);
+    res.render('checkout', { items, total });
+});
+
+app.post('/finalize-payment', async (req, res) => {
     const username = req.session.user;
-    await Order.create({ username, amount, cashAmount, status: 'Pendente' });
-    res.render('checkout', { cashAmount, amount });
+    const items = req.session.cart || [];
+    const total = items.reduce((sum, item) => sum + item.price, 0); // Simplificado
+    await Order.create({ username, items, total, status: 'Aprovado' });
+    req.session.cart = [];
+    res.render('success');
 });
 
 app.get('/admin', async (req, res) => {
     const orders = await Order.find().sort({ date: -1 });
     const users = await User.find();
     const items = await Item.find();
+    const categories = await Category.find();
     const coupons = await Coupon.find();
-    const revenue = await Order.aggregate([{ $match: { status: 'Aprovado' } }, { $group: { _id: null, total: { $sum: '$amount' } } }]);
-    res.render('admin', { orders, users, items, coupons, totalRevenue: revenue[0]?.total || 0 });
+    const revenue = await Order.aggregate([{ $match: { status: 'Aprovado' } }, { $group: { _id: null, total: { $sum: '$total' } } }]);
+    res.render('admin', { orders, users, items, categories, coupons, totalRevenue: revenue[0]?.total || 0 });
 });
 
-app.post('/approve', async (req, res) => {
-    const order = await Order.findById(req.body.id);
-    if (order) {
-        await User.findOneAndUpdate({ username: order.username }, { $inc: { cash: order.cashAmount } });
-        order.status = 'Aprovado';
-        await order.save();
-    }
+app.post('/admin/add-item', async (req, res) => {
+    await Item.create(req.body);
+    res.redirect('/admin');
+});
+app.post('/admin/add-category', async (req, res) => {
+    await Category.create(req.body);
+    res.redirect('/admin');
+});
+app.post('/admin/add-coupon', async (req, res) => {
+    await Coupon.create(req.body);
     res.redirect('/admin');
 });
 
