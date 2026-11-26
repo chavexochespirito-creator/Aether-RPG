@@ -4,11 +4,11 @@
     <meta charset="UTF-8"><title>Aether Marketplace</title>
     <style>
         :root { --primary: #00a2ff; --bg: #050a0f; --card-bg: #0f172a; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; }
-        nav { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 100; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; }
+        nav { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); position: fixed; top: 0; width: 100%; box-sizing: border-box; z-index: 100; }
         .nav-logo { color: white; font-weight: 800; font-size: 22px; }
         .nav-logo span { color: var(--primary); }
-        .shop-container { display: flex; flex-direction: column; align-items: center; padding: 60px 20px; }
+        .main-content { margin-left: 0; padding: 100px 50px; width: calc(100% - 350px); display: flex; flex-direction: column; align-items: center; }
         .packages-grid { display: flex; gap: 25px; justify-content: center; margin-bottom: 60px; flex-wrap: wrap; }
         .package-card { background: var(--card-bg); width: 240px; padding: 30px; border-radius: 25px; border: 1px solid #1e293b; text-align: center; transition: 0.4s; cursor: pointer; }
         .package-card:hover { border-color: var(--primary); transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0, 162, 255, 0.2); }
@@ -20,6 +20,14 @@
         #cash-value { font-size: 60px; font-weight: 800; min-width: 200px; }
         .price-tag { font-size: 22px; color: #888; margin-bottom: 30px; }
         .btn-buy { width: 100%; padding: 18px; background: var(--primary); border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 20px; color: white; }
+        
+        .cart-sidebar { width: 350px; background: #0f172a; height: 100vh; position: fixed; right: 0; top: 0; border-left: 2px solid var(--primary); padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; }
+        .cart-header { font-size: 24px; font-weight: bold; margin-bottom: 30px; border-bottom: 1px solid #1e293b; padding-bottom: 10px; }
+        .cart-items { flex: 1; overflow-y: auto; }
+        .cart-item { background: #1a2a3a; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .cart-footer { border-top: 1px solid #1e293b; padding-top: 20px; }
+        .total-price { font-size: 20px; font-weight: bold; display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .btn-checkout { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; font-size: 18px; }
     </style>
 </head>
 <body>
@@ -27,34 +35,46 @@
         <div class="nav-logo">AETHER<span>RPG</span></div>
         <div class="nav-user">Olá, <%= user.username %> | <b>$<%= user.cash %></b> | <a href="/logout" style="color: #ff4757; text-decoration: none; margin-left: 20px;">Sair</a></div>
     </nav>
-    <div class="shop-container">
-        <h1>Aether Marketplace</h1>
-        <div class="packages-grid">
-            <div class="package-card" onclick="setCash(1000)">
-                <img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png">
-                <h3>Iniciante</h3><p>1.000 Moedas</p><div style="font-weight:bold">R$ 1,00</div>
+    <div class="main-content">
+        <div class="shop-container">
+            <h1>Aether Marketplace</h1>
+            <div class="packages-grid">
+                <div class="package-card" onclick="setCash(1000)">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png">
+                    <h3>Iniciante</h3><p>1.000 Moedas</p><div style="font-weight:bold">R$ 1,00</div>
+                </div>
+                <div class="package-card" onclick="setCash(5000)">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2489/2489761.png">
+                    <h3>Intermediário</h3><p>5.000 Moedas</p><div style="font-weight:bold">R$ 5,00</div>
+                </div>
+                <div class="package-card" onclick="setCash(10000)">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2489/2489765.png">
+                    <h3>Magnata</h3><p>10.000 Moedas</p><div style="font-weight:bold">R$ 10,00</div>
+                </div>
             </div>
-            <div class="package-card" onclick="setCash(5000)">
-                <img src="https://cdn-icons-png.flaticon.com/512/2489/2489761.png">
-                <h3>Intermediário</h3><p>5.000 Moedas</p><div style="font-weight:bold">R$ 5,00</div>
-            </div>
-            <div class="package-card" onclick="setCash(10000)">
-                <img src="https://cdn-icons-png.flaticon.com/512/2489/2489765.png">
-                <h3>Magnata</h3><p>10.000 Moedas</p><div style="font-weight:bold">R$ 10,00</div>
+            <div class="cash-selector">
+                <h2>Personalizar Quantia</h2>
+                <div class="counter">
+                    <button class="btn-count" onclick="changeCash(-100)">-</button>
+                    <div id="cash-value">1000</div>
+                    <button class="btn-count" onclick="changeCash(100)">+</button>
+                </div>
+                <div class="price-tag">Valor Total: <span id="price">R$ 1.00</span></div>
+                <form action="/create-payment" method="POST">
+                    <input type="hidden" name="cashAmount" id="input-cash" value="1000">
+                    <button class="btn-buy" type="submit">CONFIRMAR COMPRA</button>
+                </form>
             </div>
         </div>
-        <div class="cash-selector">
-            <h2>Personalizar Quantia</h2>
-            <div class="counter">
-                <button class="btn-count" onclick="changeCash(-100)">-</button>
-                <div id="cash-value">1000</div>
-                <button class="btn-count" onclick="changeCash(100)">+</button>
-            </div>
-            <div class="price-tag">Valor Total: <span id="price">R$ 1.00</span></div>
-            <form action="/create-payment" method="POST">
-                <input type="hidden" name="cashAmount" id="input-cash" value="1000">
-                <button class="btn-buy" type="submit">CONFIRMAR COMPRA</button>
-            </form>
+    </div>
+    <div class="cart-sidebar">
+        <div class="cart-header">Sua Sacola</div>
+        <div class="cart-items">
+            <p style="text-align: center; color: #667; margin-top: 50px;">Sua sacola está vazia.</p>
+        </div>
+        <div class="cart-footer">
+            <div class="total-price"><span>Total:</span> <span>R$ 0,00</span></div>
+            <a href="/checkout" class="btn-checkout" style="text-align: center; text-decoration: none; display: block;">Finalizar Pedido</a>
         </div>
     </div>
     <script>
