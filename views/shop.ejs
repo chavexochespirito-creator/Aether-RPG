@@ -1,63 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja Premium - SAMP</title>
+    <meta charset="UTF-8"><title>Loja Premium - SAMP</title>
     <style>
-        :root { --primary: #f1c40f; --primary-dark: #d4ac0d; --bg: #0a0a0a; --card-bg: #151515; --text: #ffffff; }
-        body { background: radial-gradient(circle at top, #1a1a1a 0%, var(--bg) 100%); color: var(--text); font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; min-height: 100vh; }
-        
+        :root { --primary: #f1c40f; --bg: #0a0a0a; --card-bg: #151515; }
+        body { background: radial-gradient(circle at top, #1a1a1a 0%, var(--bg) 100%); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; min-height: 100vh; }
         nav { background: rgba(20, 20, 20, 0.8); backdrop-filter: blur(10px); padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 100; }
-        .nav-logo { color: var(--primary); font-weight: 800; font-size: 22px; letter-spacing: 1px; }
+        .nav-logo { color: var(--primary); font-weight: 800; font-size: 22px; }
         .nav-user { font-size: 14px; display: flex; align-items: center; gap: 15px; }
-        .nav-user b { color: var(--primary); font-size: 16px; }
-        .btn-logout { color: #ff4757; text-decoration: none; font-weight: bold; transition: 0.3s; }
-        .btn-logout:hover { color: #ff6b81; }
-
+        .btn-logout { color: #ff4757; text-decoration: none; font-weight: bold; }
         .shop-container { display: flex; flex-direction: column; align-items: center; padding: 60px 20px; }
-        h1 { font-size: 36px; margin-bottom: 40px; text-shadow: 0 0 15px rgba(241, 196, 15, 0.3); }
-
         .packages-grid { display: flex; gap: 25px; justify-content: center; margin-bottom: 60px; flex-wrap: wrap; }
-        .package-card { background: var(--card-bg); width: 240px; padding: 30px; border-radius: 25px; border: 1px solid #333; text-align: center; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; position: relative; overflow: hidden; }
-        .package-card:hover { border-color: var(--primary); transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px rgba(241, 196, 15, 0.1); }
-        .package-card img { width: 110px; height: 110px; margin-bottom: 20px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
-        .package-card h3 { color: var(--primary); margin: 10px 0; font-size: 22px; }
-        .package-card p { color: #aaa; margin: 5px 0; }
-        .package-card .price { font-size: 20px; font-weight: bold; color: white; margin-top: 10px; }
-
-        .cash-selector { background: rgba(25, 25, 25, 0.9); padding: 50px; border-radius: 40px; border: 1px solid rgba(241, 196, 15, 0.3); text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.6); backdrop-filter: blur(10px); max-width: 500px; width: 90%; }
-        .cash-selector h2 { font-size: 24px; margin-bottom: 30px; color: #eee; }
+        .package-card { background: var(--card-bg); width: 240px; padding: 30px; border-radius: 25px; border: 1px solid #333; text-align: center; transition: 0.4s; cursor: pointer; }
+        .package-card:hover { border-color: var(--primary); transform: translateY(-10px); }
+        .package-card img { width: 110px; height: 110px; margin-bottom: 20px; }
+        .package-card h3 { color: var(--primary); margin: 10px 0; }
+        .cash-selector { background: rgba(25, 25, 25, 0.9); padding: 50px; border-radius: 40px; border: 1px solid rgba(241, 196, 15, 0.3); text-align: center; backdrop-filter: blur(10px); max-width: 500px; width: 90%; }
         .counter { display: flex; justify-content: center; align-items: center; gap: 40px; margin: 30px 0; }
-        .btn-count { background: var(--primary); border: none; width: 65px; height: 65px; border-radius: 50%; font-size: 30px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.3); }
-        .btn-count:active { transform: scale(0.9); }
-        #cash-value { font-size: 60px; font-weight: 800; min-width: 200px; color: white; text-shadow: 0 0 20px rgba(241, 196, 15, 0.5); }
+        .btn-count { background: var(--primary); border: none; width: 65px; height: 65px; border-radius: 50%; font-size: 30px; font-weight: bold; cursor: pointer; }
+        #cash-value { font-size: 60px; font-weight: 800; min-width: 200px; }
         .price-tag { font-size: 22px; color: #888; margin-bottom: 30px; }
-        .price-tag span { color: var(--primary); font-weight: bold; }
-        .btn-buy { width: 100%; padding: 18px; background: linear-gradient(45deg, var(--primary-dark), var(--primary)); border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 20px; color: #000; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-buy:hover { transform: scale(1.03); box-shadow: 0 0 25px rgba(241, 196, 15, 0.4); }
+        .btn-buy { width: 100%; padding: 18px; background: linear-gradient(45deg, #d4ac0d, var(--primary)); border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 20px; color: #000; }
     </style>
 </head>
 <body>
     <nav>
         <div class="nav-logo">SAMP PREMIUM</div>
-        <div class="nav-user">
-            Olá, <%= user.username %> | <b>$<%= user.cash %></b> | <a href="/logout" class="btn-logout">Sair</a>
-        </div>
+        <div class="nav-user">Olá, <%= user.username %> | <b>$<%= user.cash %></b> | <a href="/logout" class="btn-logout">Sair</a></div>
     </nav>
     <div class="shop-container">
         <h1>Escolha seu Pacote de Cash</h1>
         <div class="packages-grid">
             <div class="package-card" onclick="setCash(1000)">
                 <img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png">
-                <h3>Iniciante</h3><p>1.000 Moedas</p><div class="price">R$ 1,00</div>
+                <h3>Iniciante</h3><p>1.000 Moedas</p><div style="font-weight:bold">R$ 1,00</div>
             </div>
             <div class="package-card" onclick="setCash(5000)">
                 <img src="https://cdn-icons-png.flaticon.com/512/2489/2489761.png">
-                <h3>Intermediário</h3><p>5.000 Moedas</p><div class="price">R$ 5,00</div>
+                <h3>Intermediário</h3><p>5.000 Moedas</p><div style="font-weight:bold">R$ 5,00</div>
             </div>
             <div class="package-card" onclick="setCash(10000)">
                 <img src="https://cdn-icons-png.flaticon.com/512/2489/2489765.png">
-                <h3>Magnata</h3><p>10.000 Moedas</p><div class="price">R$ 10,00</div>
+                <h3>Magnata</h3><p>10.000 Moedas</p><div style="font-weight:bold">R$ 10,00</div>
             </div>
         </div>
         <div class="cash-selector">
